@@ -17,6 +17,9 @@ mongoose
   })
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.log(err));
+app.use('/', (req, res) => {
+  res.send('Welcome to the homepage!');
+});
 app.use("/api/auth", authRoutes);
 app.use("/api/bus", busRoutes);
 app.use("/api/train", trainRoutes);
