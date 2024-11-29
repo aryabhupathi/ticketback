@@ -1,21 +1,14 @@
-
-const mongoose = require('mongoose');
-
-// Define the schema for flight seat categories
+const mongoose = require("mongoose");
 const seatCategorySchema = new mongoose.Schema({
   name: String,
   price: Number,
   rows: [Number],
 });
-
-// Define the schema for flight layout
 const layoutSchema = new mongoose.Schema({
   rows: Number,
   seatsPerRow: Number,
   seatConfiguration: [[String]],
 });
-
-// Define the main flight schema
 const flightSchema = new mongoose.Schema({
   source: { type: String, required: true },
   destination: { type: String, required: true },
@@ -27,9 +20,6 @@ const flightSchema = new mongoose.Schema({
   noOfSeatsAvailable: { type: Number, required: true },
   layout: layoutSchema,
   seatCategories: [seatCategorySchema],
-  bookedSeats: { type: [String], default: [] }, // New field to track booked seats
+  bookedSeats: { type: [String], default: [] },
 });
-
-
-// Create and export the Flight model
-module.exports = mongoose.model('Flight', flightSchema, 'flight');
+module.exports = mongoose.model("Flight", flightSchema, "flight");

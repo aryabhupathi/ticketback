@@ -1,9 +1,6 @@
 const express = require("express");
-const Bus = require("../Models/Bus"); // Adjust the path as needed
-
+const Bus = require("../Models/Bus");
 const router = express.Router();
-
-// Route to fetch all bus details
 router.get("/", async (req, res) => {
   try {
     const buses = await Bus.find();
@@ -15,13 +12,8 @@ router.get("/", async (req, res) => {
     res.status(500).json({ message: "Error fetching buses: " + err.message });
   }
 });
-
-// Route to fetch bus details based on source and destination
 router.get("/search", async (req, res) => {
   const { source, destination } = req.query;
-
-//   console.log("Source:", source, "Destination:", destination); // Add this line
-
   if (!source || !destination) {
     return res
       .status(400)
@@ -37,18 +29,14 @@ router.get("/search", async (req, res) => {
         .status(404)
         .json({ message: "No buses found for the specified route." });
     }
-
     res.json(filteredBuses);
   } catch (err) {
     res.status(500).json({ message: "Error fetching buses: " + err.message });
   }
 });
-
 router.put("/update-bus-seats", async (req, res) => {
   const { busId, updatedSeats, seatNo } = req.body;
-
   try {
-    // Find the bus by busId and update the number of seats available and booked seats
     const result = await Bus.updateOne(
       { _id: busId },
       {
@@ -56,11 +44,10 @@ router.put("/update-bus-seats", async (req, res) => {
           noOfSeatsAvailable: updatedSeats,
         },
         $addToSet: {
-          bookedSeats: { $each: seatNo }, // Add new seat numbers to the bookedSeats array
+          bookedSeats: { $each: seatNo },
         },
       }
     );
-
     if (result.modifiedCount > 0) {
       res.status(200).json({ message: "Seats updated successfully" });
     } else {
@@ -70,5 +57,4 @@ router.put("/update-bus-seats", async (req, res) => {
     res.status(500).json({ message: "Failed to update seats", error });
   }
 });
-
 module.exports = router;
