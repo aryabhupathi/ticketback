@@ -36,10 +36,14 @@ const authRoutes = require("./Routes/AuthRoutes");
 const busRoutes = require("./Routes/BusRoutes");
 const trainRoutes = require("./Routes/TrainRoutes");
 const flightRoutes = require("./Routes/FlightRoutes");
+
 dotenv.config();
 const app = express();
+
 app.use(cors());
 app.use(express.json());
+
+// MongoDB connection
 mongoose
   .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
@@ -47,12 +51,22 @@ mongoose
   })
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.log(err));
-app.get('/', (req, res) => {
-  res.send('Welcome to the homepage!');
+
+// Root route
+app.get("/", (req, res) => {
+  res.send("Welcome to the homepage!");
 });
-app.get("/api/auth", authRoutes);
-app.get("/api/bus", busRoutes);
-app.get("/api/train", trainRoutes);
-app.get("/api/flight", flightRoutes);
+
+// Use routes for specific APIs
+app.use("/api/auth", authRoutes);
+app.use("/api/bus", busRoutes);
+app.use("/api/train", trainRoutes);
+app.use("/api/flight", flightRoutes);
+
+// Fallback for unmatched routes (404)
+app.use((req, res) => {
+  res.status(404).send("404 Not Found");
+});
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
